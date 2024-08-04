@@ -1,37 +1,43 @@
 name: Build and Publish
 
+permissions:
+  actions: write
+  contents: write
+
 on:
   push:
-    branches:
-      - main  
+    branches: [ "main" ]
+    paths: [ "**.js", "**.ts", "package.json", "package-lock.json" ]
   pull_request:
-    branches:
-      - main  
+    branches: [ "main" ]
+    paths: [ "**.js", "**.ts", "package.json", "package-lock.json" ]
+  workflow_dispatch:
 
 jobs:
   build:
+
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
 
-      - name: Install dependencies
-        run: npm install
+    - name: Install dependencies
+      run: npm install
 
-      - name: Build project
-        run: npm run build
+    - name: Build project
+      run: npm run build
 
-      - name: Compress dist folder
-        run: zip -r dist.zip dist
+    - name: Compress dist folder
+      run: zip -r dist.zip dist
 
-      - name: Upload build artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: dist-artifact
-          path: dist.zip
+    - name: Upload build artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: dist-artifact
+        path: dist.zip
